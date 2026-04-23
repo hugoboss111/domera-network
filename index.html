@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOMERA — Privacy-First AI Agents</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020204;--surface:rgba(255,255,255,0.022);--surface-hover:rgba(255,255,255,0.045);--border:rgba(255,255,255,0.04);--border-hover:rgba(255,255,255,0.1);--pink:#FF46A2;--pink-soft:rgba(255,70,162,0.07);--text:#f4f4fa;--text-dim:rgba(255,255,255,0.5);--text-muted:rgba(255,255,255,0.22);--ease:cubic-bezier(0.4,0,0.2,1);--ease-out:cubic-bezier(0,0,0.2,1);--heading:'Cormorant Garamond',Georgia,serif;--body:'Outfit',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,70,162,0.12);border-radius:4px}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.014;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 64px;height:78px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,2,4,0.4);backdrop-filter:blur(52px) saturate(1.6) brightness(1.1);-webkit-backdrop-filter:blur(52px) saturate(1.6) brightness(1.1);border-bottom:1px solid rgba(255,255,255,0.03);box-shadow:0 1px 60px rgba(0,0,0,0.4)}
+.nav-logo{display:flex;align-items:center;gap:14px;font-family:var(--heading);font-weight:600;font-size:20px;letter-spacing:0.02em;text-decoration:none;color:var(--text)}
+.nav-logo img{height:34px;width:auto;filter:drop-shadow(0 0 14px rgba(255,70,162,0.2));transition:filter 1s var(--ease)}
+.nav-logo:hover img{filter:drop-shadow(0 0 22px rgba(255,70,162,0.35))}
+.nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text-muted);font-size:13px;font-weight:500;letter-spacing:0.04em;transition:color 1s var(--ease);display:flex;align-items:center;gap:6px}
+.nav-links a:hover{color:rgba(255,255,255,0.7)}
+.nav-links a svg{width:16px;height:16px;fill:currentColor}
+.nav-wallet{padding:10px 26px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);border-radius:10px;color:var(--text-dim);font-family:var(--body);font-size:12.5px;font-weight:600;letter-spacing:0.02em;cursor:pointer;transition:all 1s var(--ease)}
+.nav-wallet:hover{background:var(--pink-soft);border-color:rgba(255,70,162,0.18);color:var(--text)}
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 32px 100px;background:var(--bg)}
+#heroLighting,#heroParticles{position:absolute;inset:0;pointer-events:none}
+#heroLighting{z-index:1}#heroParticles{z-index:3}
+.hero-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse 62% 62% at 50% 46%,transparent 0%,rgba(2,2,4,0.2) 45%,rgba(2,2,4,0.75) 78%,var(--bg) 100%)}
+.hero-corner-logo{position:absolute;top:52%;left:46%;transform:translate(-50%,-50%);width:min(110vh,1360px);max-width:98vw;height:auto;z-index:1;pointer-events:none;opacity:0;filter:blur(1.4px) brightness(1.24) contrast(0.84) saturate(0.95);-webkit-mask-image:radial-gradient(ellipse at center,black 10%,rgba(0,0,0,0.72) 40%,rgba(0,0,0,0.28) 66%,transparent 92%);mask-image:radial-gradient(ellipse at center,black 10%,rgba(0,0,0,0.72) 40%,rgba(0,0,0,0.28) 66%,transparent 92%);animation:heroLogoEmerge 2.6s var(--ease-out) 0.5s forwards;will-change:opacity}
+@keyframes heroLogoEmerge{from{opacity:0}to{opacity:0.5}}
+.hero-content{position:relative;z-index:10;text-align:center;display:flex;flex-direction:column;align-items:center}
+.hero-title{font-family:var(--heading);font-size:clamp(72px,11vw,150px);font-weight:600;letter-spacing:0.02em;line-height:0.9;color:rgba(255,255,255,0.96);margin-bottom:36px;text-shadow:0 2px 40px rgba(0,0,0,0.75),0 0 80px rgba(2,2,4,0.4)}
+.hero-title .char{display:inline-block;opacity:0;filter:blur(8px);color:rgba(255,255,255,0.96);will-change:opacity,filter,transform;animation:charFloat 0.7s var(--ease-out) forwards}
+@keyframes charFloat{0%{opacity:0;filter:blur(10px);transform:translateY(20px) scale(0.97)}40%{opacity:0.6;filter:blur(3px);transform:translateY(-4px) scale(1.01)}100%{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
+.hero-tagline{font-size:clamp(17px,2vw,22px);font-weight:400;color:rgba(255,255,255,0.84);line-height:1.5;max-width:520px;text-shadow:0 1px 20px rgba(0,0,0,0.5)}
+.hero-rest{opacity:0;transform:translateY(10px);will-change:opacity,transform;animation:restIn 0.7s var(--ease-out) forwards}
+@keyframes restIn{to{opacity:1;transform:translateY(0)}}
+.hero-buttons{display:flex;gap:18px;margin-top:48px}
+.btn-primary{padding:18px 44px;background:rgba(255,70,162,0.09);color:#fff;border:1px solid rgba(255,70,162,0.25);border-radius:12px;font-family:var(--body);font-size:15px;font-weight:600;letter-spacing:0.02em;cursor:pointer;transition:all 0.8s var(--ease);text-decoration:none;display:inline-flex;align-items:center;backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:0 0 38px rgba(255,70,162,0.1),inset 0 1px 0 rgba(255,255,255,0.06)}
+.btn-primary:hover{background:rgba(255,70,162,0.16);border-color:rgba(255,70,162,0.45);transform:translateY(-2px);box-shadow:0 0 22px rgba(255,70,162,0.34),0 6px 26px rgba(255,70,162,0.14),inset 0 1px 0 rgba(255,255,255,0.1)}
+.btn-secondary{padding:18px 44px;background:rgba(255,255,255,0.02);color:var(--text-dim);border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-family:var(--body);font-size:15px;font-weight:600;cursor:pointer;transition:all 1s var(--ease);text-decoration:none;display:inline-flex;align-items:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,0.18);transform:translateY(-3px);background:rgba(255,255,255,0.04)}
+.reveal{opacity:0;transform:translateY(52px);transition:opacity 1.2s var(--ease-out),transform 1.2s var(--ease-out)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+section{padding:180px 72px;position:relative}
+.section-label{font-size:11px;font-weight:600;color:var(--pink);letter-spacing:0.24em;text-transform:uppercase;margin-bottom:22px}
+.section-title{font-family:var(--heading);font-size:clamp(36px,5vw,64px);font-weight:600;letter-spacing:0.01em;line-height:1.05;margin-bottom:26px;color:rgba(255,255,255,0.9)}
+.section-sub{font-size:16px;color:var(--text-dim);max-width:520px;line-height:1.8}
+.features{text-align:center;position:relative;overflow:hidden}
+.features-content{position:relative;z-index:1}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1180px;margin:88px auto 0}
+.feature-card{background:rgba(255,255,255,0.012);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:48px 36px 44px;text-align:left;transition:all 1s var(--ease);cursor:default;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,70,162,0.25),transparent);opacity:0;transition:opacity 1s var(--ease)}
+.feature-card:hover{background:rgba(255,255,255,0.028);border-color:rgba(255,255,255,0.1);transform:translateY(-3px)}
+.feature-card:hover::before{opacity:1}
+.feature-glyph{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(255,70,162,0.2);border-radius:10px;background:rgba(255,70,162,0.05);color:var(--pink);font-size:20px;margin-bottom:28px;transition:all 0.8s var(--ease)}
+.feature-card:hover .feature-glyph{background:rgba(255,70,162,0.1);border-color:rgba(255,70,162,0.35);transform:scale(1.05)}
+.feature-card h3{font-family:var(--heading);font-size:24px;font-weight:600;color:rgba(255,255,255,0.95);margin-bottom:14px;letter-spacing:0.005em}
+.feature-card p{font-size:14px;color:var(--text-dim);line-height:1.7}
+.feature-card p .pink{color:var(--pink);font-weight:500}
+.agents-section{padding-bottom:140px}
+.agents-header{text-align:center;margin-bottom:80px}
+.agent-grid{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:1240px;margin:0 auto;padding:0 40px}
+.agent-box{width:142px;background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:all 0.8s var(--ease);overflow:hidden;position:relative}
+.agent-box:hover,.agent-box.active{background:rgba(255,70,162,0.04);border-color:rgba(255,70,162,0.22);box-shadow:0 8px 40px rgba(0,0,0,0.25)}
+.agent-box-icon{font-size:24px;margin-bottom:14px;opacity:0.55;color:var(--text-dim);transition:all 0.8s var(--ease);line-height:1}
+.agent-box-icon svg{display:inline-block;vertical-align:middle}
+.agent-box:hover .agent-box-icon,.agent-box.active .agent-box-icon{opacity:1;color:var(--pink)}
+.agent-box h4{font-family:var(--heading);font-size:16px;font-weight:600;color:rgba(255,255,255,0.78);margin-bottom:6px;transition:color 0.8s var(--ease)}
+.agent-box:hover h4,.agent-box.active h4{color:var(--text)}
+.agent-box .agent-task{font-size:9.5px;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;font-weight:600}
+.agent-box .agent-expand{max-height:0;overflow:hidden;transition:max-height 0.8s var(--ease),opacity 0.6s var(--ease),margin 0.8s var(--ease);opacity:0;margin-top:0}
+.agent-box:hover .agent-expand,.agent-box.active .agent-expand{max-height:140px;opacity:1;margin-top:14px}
+.agent-box .agent-expand p{font-size:12px;color:var(--text-dim);line-height:1.55;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;text-align:left}
+.token-section{text-align:center;padding-top:200px;padding-bottom:200px}
+.token-emblem{width:88px;height:auto;margin:0 auto 48px;filter:drop-shadow(0 0 40px rgba(255,70,162,0.2))}
+.token-utilities{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:64px auto;max-width:940px}
+.token-util{padding:18px 30px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text-dim);transition:all 1s var(--ease);letter-spacing:0.01em}
+.token-util:hover{border-color:var(--border-hover);color:var(--text);background:var(--surface-hover);transform:translateY(-2px)}
+.countdown-wrapper{margin-top:88px}
+.countdown-label{font-size:11px;color:var(--text-muted);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:36px}
+.countdown{display:flex;gap:16px;justify-content:center}
+.countdown-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 26px;min-width:108px}
+.countdown-num{font-family:var(--mono);font-size:44px;font-weight:500;letter-spacing:-0.02em}
+.countdown-unit{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.18em;margin-top:8px}
+.roadmap-section{overflow:hidden}
+.roadmap-track{display:flex;margin-top:88px;position:relative;padding:0 72px}
+.roadmap-track::before{content:'';position:absolute;top:28px;left:72px;right:72px;height:1.5px;background:linear-gradient(90deg,var(--pink),rgba(255,70,162,0.12),rgba(255,70,162,0.01))}
+.roadmap-item{flex:1;text-align:left;padding-right:44px;position:relative}
+.roadmap-dot{width:12px;height:12px;border-radius:50%;background:var(--pink);margin-bottom:30px;position:relative;z-index:1;box-shadow:0 0 18px rgba(255,70,162,0.3)}
+.roadmap-dot.future{background:var(--bg);border:2px solid rgba(255,70,162,0.18);box-shadow:none}
+.roadmap-q{font-size:11px;color:var(--pink);font-weight:600;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px}
+.roadmap-item h4{font-family:var(--heading);font-size:20px;font-weight:600;margin-bottom:12px}
+.roadmap-item p{font-size:14px;color:var(--text-dim);line-height:1.7}
+.news-section{text-align:center;padding:200px 72px}
+.news-preview{max-width:880px;margin:0 auto 68px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.05);background:rgba(8,8,14,0.95);box-shadow:0 28px 88px rgba(0,0,0,0.4)}
+.news-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015)}
+.news-topbar-logo{display:flex;align-items:center;gap:8px;font-family:var(--heading);font-size:14px;font-weight:600;color:var(--text-dim)}
+.news-topbar-logo img{height:18px;opacity:0.6}
+.news-topbar-tabs{display:flex;gap:4px}
+.news-topbar-tab{padding:5px 14px;font-size:11px;font-weight:500;color:var(--text-muted);border-radius:6px}
+.news-topbar-tab.active{color:var(--text);background:rgba(255,255,255,0.05)}
+.news-body{padding:24px;text-align:left}
+.news-hero-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:24px;margin-bottom:16px;display:flex;gap:20px;align-items:center}
+.news-hero-img{width:120px;height:80px;border-radius:8px;background:rgba(255,70,162,0.06);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);flex-shrink:0}
+.news-hero-text h4{font-family:var(--heading);font-size:16px;font-weight:600;margin-bottom:4px}
+.news-hero-text p{font-size:12px;color:var(--text-muted)}
+.news-hero-text .news-tag{font-size:9px;color:var(--pink);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.news-card{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.03);border-radius:8px;padding:16px;transition:all 0.8s var(--ease)}
+.news-card:hover{background:rgba(255,255,255,0.03)}
+.news-card-img{width:100%;height:60px;border-radius:6px;background:rgba(255,255,255,0.03);margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-muted)}
+.news-card h5{font-family:var(--heading);font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text-dim)}
+.news-card span{font-size:10px;color:var(--text-muted)}
+.news-enter-btn{display:inline-block;padding:20px 56px;background:var(--pink);color:#fff;text-decoration:none;border-radius:12px;font-family:var(--body);font-size:16px;font-weight:700;transition:all 1s var(--ease);box-shadow:0 0 36px rgba(255,70,162,0.15)}
+.news-enter-btn:hover{transform:translateY(-3px);box-shadow:0 0 52px rgba(255,70,162,0.25)}
+.email-section{text-align:center;padding:100px 72px 180px}
+.email-form{display:flex;gap:12px;max-width:500px;margin:44px auto 0}
+.email-input{flex:1;padding:18px 24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--body);font-size:14px;outline:none;transition:border-color 1s var(--ease)}
+.email-input::placeholder{color:var(--text-muted)}
+.email-input:focus{border-color:rgba(255,70,162,0.22)}
+.email-submit{padding:18px 36px;background:var(--pink);border:none;border-radius:12px;color:#fff;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:all 1s var(--ease);white-space:nowrap}
+.email-submit:hover{box-shadow:0 6px 28px rgba(255,70,162,0.2);transform:translateY(-1px)}
+footer{padding:60px 72px;border-top:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center}
+.footer-left{display:flex;align-items:center;gap:20px}
+.footer-logo{height:28px;opacity:0.3}
+.footer-text{font-size:12.5px;color:var(--text-muted);line-height:2}
+.footer-text strong{font-family:var(--heading);color:var(--text-dim);font-weight:600}
+.footer-links{display:flex;gap:36px}
+.footer-links a{font-size:12.5px;color:var(--text-muted);text-decoration:none;transition:color 1s var(--ease);display:flex;align-items:center;gap:6px}
+.footer-links a:hover{color:rgba(255,255,255,0.55)}
+.footer-links a svg{width:14px;height:14px;fill:currentColor}
+@media(max-width:900px){
+  html,body{overflow-x:hidden}
+
+  /* Nav — wallet visible, tighter */
+  nav{padding:0 18px;height:60px}
+  .nav-logo{font-size:17px;gap:10px}
+  .nav-logo img{height:28px}
+  .nav-links{display:none}
+  .nav-wallet{padding:9px 18px;font-size:11.5px;border-radius:9px}
+
+  section{padding:90px 20px}
+
+  /* Hero */
+  .hero{padding:96px 20px 64px;min-height:88vh}
+  .hero-corner-logo{width:min(130vw,580px);max-width:130vw;filter:blur(1.5px) brightness(1.2) contrast(0.82) saturate(0.95) opacity(0.82)}
+  .hero-title{font-size:clamp(42px,12.8vw,66px)!important;margin-bottom:22px}
+  .hero-tagline{font-size:14.5px!important;max-width:280px;line-height:1.55}
+  .hero-buttons{flex-direction:column;gap:11px;margin-top:36px;width:100%;max-width:280px}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center;padding:15px;font-size:14px;border-radius:10px}
+
+  /* Section headings */
+  .section-label{font-size:10px;letter-spacing:0.22em;margin-bottom:18px}
+  .section-title{font-size:clamp(26px,7.6vw,40px);margin-bottom:20px}
+  .section-sub{font-size:14.5px;line-height:1.7}
+
+  /* Features */
+  .features-grid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto;gap:14px;margin-top:60px}
+  .feature-card{padding:34px 28px 32px;border-radius:14px}
+  .feature-glyph{width:40px;height:40px;font-size:18px;margin-bottom:22px}
+  .feature-card h3{font-size:21px;margin-bottom:12px}
+  .feature-card p{font-size:13.5px;line-height:1.65}
+
+  /* Agents — no hover on mobile, so expand permanently */
+  .agents-section{padding-bottom:90px}
+  .agents-header{margin-bottom:52px}
+  .agent-grid{flex-direction:column;align-items:stretch;padding:0 20px;gap:10px}
+  .agent-box{width:100%;padding:22px 20px;border-radius:12px;text-align:left;display:grid;grid-template-columns:auto 1fr;gap:2px 16px;align-items:center}
+  .agent-box-icon{margin-bottom:0;grid-row:1/3;font-size:22px;opacity:1;color:var(--pink)}
+  .agent-box h4{font-size:16px;margin-bottom:2px;color:var(--text)}
+  .agent-box .agent-task{font-size:9.5px}
+  .agent-box .agent-expand,.agent-box:hover .agent-expand{max-height:none;opacity:1;margin-top:12px;grid-column:1/3}
+  .agent-box .agent-expand p{border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;font-size:12.5px}
+
+  /* Token */
+  .token-section{padding:120px 20px}
+  .token-emblem{width:68px;margin-bottom:36px}
+  .token-utilities{gap:8px;margin:46px auto}
+  .token-util{padding:13px 18px;font-size:12.5px;border-radius:8px}
+  .countdown-wrapper{margin-top:72px}
+  .countdown-label{font-size:10px;margin-bottom:28px}
+  .countdown{flex-wrap:wrap;gap:10px;max-width:340px;margin-left:auto;margin-right:auto}
+  .countdown-block{flex:0 0 calc(50% - 5px);min-width:0;padding:22px 14px;border-radius:12px}
+  .countdown-num{font-size:32px}
+  .countdown-unit{font-size:9px;letter-spacing:0.16em}
+
+  /* Roadmap */
+  .roadmap-track{flex-direction:column;gap:0;padding:0 0 0 30px;margin-top:56px}
+  .roadmap-track::before{display:block!important;top:0;bottom:0;left:6px;right:auto;width:2px;height:100%;background:linear-gradient(180deg,var(--pink),rgba(255,70,162,0.12))}
+  .roadmap-item{padding:0 0 40px 0}
+  .roadmap-dot{position:absolute;left:-30px;top:2px;margin-bottom:0}
+  .roadmap-q{font-size:10px;margin-bottom:10px}
+  .roadmap-item h4{font-size:19px;margin-bottom:10px}
+  .roadmap-item p{font-size:13.5px}
+
+  /* News */
+  .news-section{padding:120px 20px}
+  .news-preview{border-radius:14px}
+  .news-topbar{padding:10px 14px}
+  .news-topbar-logo{font-size:13px}
+  .news-topbar-tab{font-size:10px;padding:4px 10px}
+  .news-body{padding:18px}
+  .news-grid{grid-template-columns:1fr;gap:10px}
+  .news-hero-card{flex-direction:column;padding:18px;gap:14px;align-items:stretch}
+  .news-hero-img{width:100%;height:90px}
+  .news-hero-text h4{font-size:15px}
+  .news-enter-btn{padding:17px 44px;font-size:14.5px}
+
+  /* Email */
+  .email-section{padding:56px 20px 96px}
+  .email-form{flex-direction:column;max-width:100%;gap:10px;margin-top:36px}
+  .email-input,.email-submit{width:100%;padding:15px 20px;font-size:14px;border-radius:10px}
+
+  /* Footer */
+  footer{flex-direction:column;gap:22px;text-align:center;padding:44px 20px}
+  .footer-left{flex-direction:column;gap:12px;align-items:center}
+  .footer-logo{height:24px}
+  .footer-text{font-size:11.5px;line-height:1.85}
+  .footer-links{gap:18px;flex-wrap:wrap;justify-content:center}
+  .footer-links a{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="#" class="nav-logo"><img src="logo.png" alt="Domera"> DOMERA</a>
+  <ul class="nav-links">
+    <li><a href="news.html">News</a></li>
+    <li><a href="https://x.com/DomeraNetwork" target="_blank" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></li>
+    <li><a href="https://t.me/DomeraNetwork" target="_blank" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a></li>
+  </ul>
+  <button class="nav-wallet">Connect Wallet</button>
+</nav>
+
+<section class="hero">
+  <canvas id="heroLighting"></canvas>
+  <img src="logo_render.png" alt="" class="hero-corner-logo" aria-hidden="true">
+  <canvas id="heroParticles"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <h1 class="hero-title" id="heroTitle">DOMERA</h1>
+    <p class="hero-tagline hero-rest" id="heroTagline">AI Agents meet Privacy-First Infrastructure</p>
+    <div class="hero-buttons hero-rest" id="heroButtons">
+      <a href="https://t.me/DomeraNetwork" target="_blank" class="btn-primary">Join Community</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="features-content">
+    <div class="reveal"><div class="section-label">Core Infrastructure</div><div class="section-title" style="max-width:680px;margin:0 auto;">Built for What's Next</div></div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-glyph">✦</div><h3>Deploy &amp; Evolve</h3><p>Commission <span class="pink">autonomous AI agents</span> for crypto operations. Each agent adapts through deployment, delivering predictable, verifiable outcomes at scale.</p></div>
+      <div class="feature-card reveal"><div class="feature-glyph">◈</div><h3>Programmable Privacy</h3><p>Agents operate within <span class="pink">zero-knowledge enclaves</span>. Selective disclosure keeps strategies confidential without sacrificing verifiability.</p></div>
+      <div class="feature-card reveal"><div class="feature-glyph">⬡</div><h3>Intelligence Nexus</h3><p>A 3D simulation environment for <span class="pink">agent performance</span> visualization, strategy testing, and live fleet monitoring.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="agents-section" id="agents">
+  <div class="agents-header reveal"><div class="section-label">Intelligence Agents</div><div class="section-title">Autonomous AI, Purpose-Built</div><div class="section-sub" style="margin:0 auto;">Eleven specialized agents, each engineered for a distinct operational domain.</div></div>
+  <div class="agent-grid reveal" id="agentGrid"></div>
+</section>
+
+<section class="token-section" id="token">
+  <div class="reveal"><img src="logo.png" alt="$DOMERA" class="token-emblem"><div class="section-label">Protocol Token</div><div class="section-title">The $DOMERA Token</div><div class="section-sub" style="margin:0 auto;">The coordination layer powering the Domera protocol. Enables agent deployment, private compute, governance, and value transfer.</div></div>
+  <div class="token-utilities reveal"><div class="token-util">Agent Deployment Credits</div><div class="token-util">Private Compute Access</div><div class="token-util">Protocol Governance</div><div class="token-util">Staking &amp; Rewards</div><div class="token-util">Compute Allocation</div></div>
+  <div class="countdown-wrapper reveal"><div class="countdown-label">Token Generation Event</div><div class="countdown" id="countdown"><div class="countdown-block"><div class="countdown-num" id="cd-d">00</div><div class="countdown-unit">Days</div></div><div class="countdown-block"><div class="countdown-num" id="cd-h">00</div><div class="countdown-unit">Hours</div></div><div class="countdown-block"><div class="countdown-num" id="cd-m">00</div><div class="countdown-unit">Minutes</div></div><div class="countdown-block"><div class="countdown-num" id="cd-s">00</div><div class="countdown-unit">Seconds</div></div></div></div>
+</section>
+
+<section class="roadmap-section" id="roadmap">
+  <div class="reveal" style="text-align:center;"><div class="section-label">Roadmap</div><div class="section-title">Development Milestones</div></div>
+  <div class="roadmap-track reveal">
+    <div class="roadmap-item"><div class="roadmap-dot"></div><div class="roadmap-q">Q2 2026</div><h4>Protocol Launch</h4><p>Token generation, agent deployment framework, platform beta, staking on Ethereum mainnet.</p></div>
+    <div class="roadmap-item"><div class="roadmap-dot"></div><div class="roadmap-q">Q3 2026</div><h4>Evolution Engine</h4><p>Continuous learning pipelines, orchestration API, performance benchmarking.</p></div>
+    <div class="roadmap-item"><div class="roadmap-dot future"></div><div class="roadmap-q">Q4 2026</div><h4>Private Compute</h4><p>TEE-secured execution, ZK verification, encrypted autonomous processing.</p></div>
+    <div class="roadmap-item"><div class="roadmap-dot future"></div><div class="roadmap-q">Q1 2027</div><h4>Intelligence Nexus</h4><p>3D simulation environment, fleet monitoring, institutional onboarding.</p></div>
+  </div>
+</section>
+
+<section class="news-section">
+  <div class="reveal"><div class="section-label">Latest Updates</div><div class="section-title">Domera News</div><div class="section-sub" style="margin:0 auto 68px;">Stay informed on protocol development, partnerships, and ecosystem growth.</div></div>
+  <div class="news-preview reveal">
+    <div class="news-topbar"><div class="news-topbar-logo"><img src="logo.png" alt="D"> Domera News</div><div class="news-topbar-tabs"><div class="news-topbar-tab active">Latest</div><div class="news-topbar-tab">Protocol</div><div class="news-topbar-tab">Ecosystem</div></div></div>
+    <div class="news-body">
+      <div class="news-hero-card"><div class="news-hero-img">Coming Soon</div><div class="news-hero-text"><div class="news-tag">Featured</div><h4>Domera Protocol Whitepaper Release</h4><p>Full technical specification for the privacy-first autonomous agent framework.</p></div></div>
+      <div class="news-grid"><div class="news-card"><div class="news-card-img">Coming Soon</div><h5>Agent Architecture Deep Dive</h5><span>Protocol · 2 min</span></div><div class="news-card"><div class="news-card-img">Coming Soon</div><h5>ZK Privacy Enclaves Explained</h5><span>Technical · 3 min</span></div><div class="news-card"><div class="news-card-img">Coming Soon</div><h5>$DOMERA Token Utility Model</h5><span>Tokenomics · 2 min</span></div></div>
+    </div>
+  </div>
+  <a href="news.html" class="news-enter-btn reveal">View All News</a>
+</section>
+
+<section class="email-section" id="email">
+  <div class="reveal"><div class="section-label">Early Access</div><div class="section-title" style="font-size:clamp(28px,3.5vw,44px);">Join the Waitlist</div><div class="section-sub" style="margin:0 auto;">Be among the first to deploy autonomous intelligence agents on Ethereum.</div></div>
+  <form class="email-form reveal" onsubmit="event.preventDefault();this.querySelector('button').textContent='Registered ✓';this.querySelector('input').disabled=true;"><input type="email" class="email-input" placeholder="Enter your email" required><button type="submit" class="email-submit">Request Access</button></form>
+</section>
+
+<footer>
+  <div class="footer-left"><img src="logo.png" alt="Domera" class="footer-logo"><div class="footer-text"><strong>Domera</strong><br>Programmable privacy. Autonomous intelligence.<br>© 2026 Domera. All rights reserved.</div></div>
+  <div class="footer-links"><a href="https://t.me/DomeraNetwork" target="_blank"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> Telegram</a><a href="https://x.com/DomeraNetwork" target="_blank"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Twitter</a><a href="#">Documentation</a><a href="#">Whitepaper</a></div>
+</footer>
+
+<script>
+/* Hero title letter reveal */
+(function(){const t=document.getElementById('heroTitle');const txt=t.textContent;t.textContent='';txt.split('').forEach((ch,i)=>{const s=document.createElement('span');s.className='char';s.textContent=ch;s.style.animationDelay=(0.3+i*0.08)+'s';t.appendChild(s)});const b=0.95;document.getElementById('heroTagline').style.animationDelay=b+'s';document.getElementById('heroButtons').style.animationDelay=(b+0.08)+'s'})();
+
+/* Atmospheric canvas effects */
+(function(){const c=document.getElementById('heroLighting');const ctx=c.getContext('2d');let w,h,dpr;function resize(){dpr=Math.min(window.devicePixelRatio,2);w=c.offsetWidth;h=c.offsetHeight;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}resize();window.addEventListener('resize',resize);const shafts=[];for(let i=0;i<6;i++)shafts.push({angle:(Math.PI*2/6)*i+(Math.random()-0.5)*0.4,length:180+Math.random()*220,width:1.2+Math.random()*2.5,alpha:0.015+Math.random()*0.03,speed:0.00008+Math.random()*0.00015,phase:Math.random()*Math.PI*2});const EC=18;const em=[];function spawnE(){const st=Math.random();let x,y;if(st<0.4){x=w*0.15+Math.random()*w*0.7;y=h*0.7+Math.random()*h*0.3}else if(st<0.7){x=Math.random()>0.5?w*0.05+Math.random()*w*0.2:w*0.75+Math.random()*w*0.2;y=h*0.3+Math.random()*h*0.5}else{const a=Math.random()*Math.PI*2,d=120+Math.random()*200;x=w/2+Math.cos(a)*d;y=h*0.45+Math.sin(a)*d*0.5}return{x,y,vx:(Math.random()-0.5)*0.3,vy:-(0.15+Math.random()*0.35),wa:Math.random()*Math.PI*2,ws:0.005+Math.random()*0.015,wst:0.02+Math.random()*0.06,size:0.8+Math.random()*2,life:0,maxLife:3+Math.random()*5,gp:0.3+Math.random()*0.3,warm:Math.random()>0.6}}for(let i=0;i<EC;i++){const e=spawnE();e.life=Math.random()*e.maxLife;em.push(e)}let lt=performance.now();function draw(){const now=performance.now();const dt=(now-lt)/1000;lt=now;const t=now*0.001;ctx.clearRect(0,0,w,h);const cx=w/2,cy=h*0.42;const cs=75+Math.sin(t*0.4)*12;const core=ctx.createRadialGradient(cx,cy,0,cx,cy,cs);core.addColorStop(0,'rgba(255,70,162,'+(0.07+0.025*Math.sin(t*0.5))+')');core.addColorStop(0.5,'rgba(255,70,162,'+(0.02+0.008*Math.sin(t*0.4))+')');core.addColorStop(1,'rgba(255,70,162,0)');ctx.fillStyle=core;ctx.fillRect(0,0,w,h);ctx.save();ctx.globalCompositeOperation='lighter';shafts.forEach(s=>{const a=s.alpha*(0.3+0.7*Math.sin(t*0.25+s.phase));if(a<0.003)return;const ang=s.angle+t*s.speed;const x2=cx+Math.cos(ang)*s.length;const y2=cy+Math.sin(ang)*s.length*0.45;const grad=ctx.createLinearGradient(cx,cy,x2,y2);grad.addColorStop(0,'rgba(255,70,162,'+a*0.7+')');grad.addColorStop(0.35,'rgba(255,130,190,'+a*0.35+')');grad.addColorStop(1,'rgba(255,70,162,0)');ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x2,y2);ctx.lineWidth=s.width;ctx.strokeStyle=grad;ctx.stroke()});ctx.restore();em.forEach((e,i)=>{e.life+=dt;if(e.life>=e.maxLife){Object.assign(em[i],spawnE());return}const n=e.life/e.maxLife;e.wa+=e.ws;e.x+=e.vx+Math.sin(e.wa)*e.wst;e.y+=e.vy+Math.cos(e.wa*0.7)*e.wst*0.5;const gd=Math.abs(n-e.gp);let gl=Math.max(0,1-(gd/0.25));gl=gl*gl*(3-2*gl);const lf=n<0.1?n/0.1:n>0.85?(1-n)/0.15:1;const al=gl*lf;if(al<0.005)return;const r=e.size*(0.7+0.3*gl);if(al>0.05){ctx.beginPath();ctx.arc(e.x,e.y,r*5,0,Math.PI*2);ctx.fillStyle='rgba(255,70,162,'+al*0.05+')';ctx.fill()}ctx.beginPath();ctx.arc(e.x,e.y,r,0,Math.PI*2);ctx.fillStyle=e.warm?'rgba(255,210,230,'+al*0.55+')':'rgba(255,100,170,'+al*0.5+')';ctx.fill()});requestAnimationFrame(draw)}draw()})();
+
+(function(){const c=document.getElementById('heroParticles');const ctx=c.getContext('2d');let w,h;function resize(){const r=Math.min(window.devicePixelRatio,2);w=c.offsetWidth;h=c.offsetHeight;c.width=w*r;c.height=h*r;ctx.setTransform(r,0,0,r,0,0)}resize();window.addEventListener('resize',resize);const m=[];for(let i=0;i<20;i++)m.push({x:Math.random()*w,y:Math.random()*h,size:0.2+Math.random()*0.55,dx:(Math.random()-0.5)*0.1,dy:(Math.random()-0.5)*0.08,alpha:0.018+Math.random()*0.045,pulse:Math.random()*Math.PI*2,speed:0.18+Math.random()*0.35});function draw(){ctx.clearRect(0,0,w,h);const t=performance.now()*0.001;m.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<-10)p.x=w+10;if(p.x>w+10)p.x=-10;if(p.y<-10)p.y=h+10;if(p.y>h+10)p.y=-10;const a=p.alpha*(0.3+0.7*Math.sin(t*p.speed+p.pulse));if(a<0.005)return;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle='rgba(255,200,230,'+a+')';ctx.fill()});requestAnimationFrame(draw)}draw()})();
+
+/* Agent grid */
+const agentData=[{icon:"◎",task:"Personal Intelligence",name:"Echo",desc:"Autonomous workflow management, research synthesis, and daily task orchestration with adaptive learning."},{icon:"◈",task:"Privacy Operations",name:"Frost",desc:"Real-time on-chain obfuscation, transaction pattern analysis, and ZK-powered metadata sanitization."},{icon:"♛",task:"Governance Intel",name:"Regal",desc:"DAO proposal analysis, voting outcome modeling, and strategic governance recommendations."},{icon:"◆",task:"Secure Execution",name:"Facet",desc:"Encrypted order execution with MEV protection across decentralized exchanges."},{icon:"✦",task:"Market Intelligence",name:"Spark",desc:"Multi-chain monitoring of token launches, liquidity shifts, and sentiment signals."},{icon:"✧",task:"Deep Research",name:"Nebula",desc:"Autonomous analysis of whitepapers, tokenomics, and protocol architectures."},{icon:"⬡",task:"Yield Optimization",name:"Aureus",desc:"DeFi yield hunting with auto-compounding, rebalancing, and capital migration."},{icon:"❋",task:"ESG Analysis",name:"Verdant",desc:"Environmental and governance metrics across on-chain carbon and sustainability protocols."},{icon:"☉",task:"Sentiment Analysis",name:"Stellar",desc:"Real-time social data aggregation and narrative shift identification."},{icon:"⬢",task:"Fleet Orchestration",name:"Spectrum",desc:"Multi-domain coordination of research, execution, analytics, and communication."},{icon:'<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h6l-1 8 10-12h-6z"/></svg>',task:"Alpha Discovery",name:"Inferno",desc:"High-frequency opportunity scanning with contract validation and precision execution."}];
+const grid=document.getElementById("agentGrid");
+agentData.forEach(a=>{const el=document.createElement("div");el.className="agent-box";el.innerHTML='<div class="agent-box-icon">'+a.icon+'</div><h4>'+a.name+'</h4><div class="agent-task">'+a.task+'</div><div class="agent-expand"><p>'+a.desc+'</p></div>';grid.appendChild(el)});
+
+const tge=new Date(Date.now()+40*864e5);function cd(){const d=tge-Date.now();if(d<=0)return;document.getElementById('cd-d').textContent=String(Math.floor(d/864e5)).padStart(2,'0');document.getElementById('cd-h').textContent=String(Math.floor((d%864e5)/36e5)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((d%36e5)/6e4)).padStart(2,'0');document.getElementById('cd-s').textContent=String(Math.floor((d%6e4)/1e3)).padStart(2,'0')}cd();setInterval(cd,1000);
+
+const obs=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*100);obs.unobserve(e.target)}})},{threshold:0.06,rootMargin:'0px 0px -60px 0px'});document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
